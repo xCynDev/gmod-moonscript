@@ -8,6 +8,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@master
+ 
+    - name: Install dependencies
+      run: | 
+        sudo apt-get update
+        sudo apt-get install xz-utils
 
     - name: Show GCC
       run: gcc -v
