@@ -26,7 +26,7 @@ jobs:
 
     - name: Get LPeg
       run: |
-        curl -o lpeg.tar.gz http://www.inf.puc-rio.br/~roberto/lpeg/lpeg-1.0.2.tar.gz
+        curl -L http://www.inf.puc-rio.br/~roberto/lpeg/lpeg-1.0.2.tar.gz > lpeg.tar.gz
         tar -xzf lpeg.tar.gz
 
     - name: Get Luafilesystem
