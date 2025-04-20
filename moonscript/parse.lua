@@ -172,6 +172,7 @@ local build_grammar = wrap_env(debug_grammar, function(root)
     DotChainItem = symx(".") * _Name / mark("dot"),
     ColonChainItem = symx("\\") * _Name / mark("colon"),
     ColonChain = ColonChainItem * (Invoke * ChainItems ^ -1) ^ -1,
+    AliasColonChainItem = symx("::") * _Name / mark("colon"),
     Slice = symx("[") * (SliceValue + Cc(1)) * sym(",") * (SliceValue + Cc("")) * (sym(",") * SliceValue) ^ -1 * sym("]") / mark("slice"),
     Invoke = FnArgs / mark("call") + SingleString / wrap_func_arg + DoubleString / wrap_func_arg + L(P("[")) * LuaString / wrap_func_arg,
     TableValue = KeyValue + Ct(Exp),

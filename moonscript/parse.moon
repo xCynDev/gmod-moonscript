@@ -242,8 +242,9 @@ build_grammar = wrap_env debug_grammar, (root) ->
       symx"[" * Exp/mark"index" * sym"]"
 
     DotChainItem: symx"." * _Name/mark"dot"
-    ColonChainItem: symx"::" * _Name / mark"colon"
+    ColonChainItem: symx"\\" * _Name / mark"colon"
     ColonChain: ColonChainItem * (Invoke * ChainItems^-1)^-1
+    AliasColonChainItem: symx"::" * _Name / mark"colon"
 
     Slice: symx"[" * (SliceValue + Cc(1)) * sym"," * (SliceValue + Cc"")  *
       (sym"," * SliceValue)^-1 *sym"]" / mark"slice"
