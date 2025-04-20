@@ -36,11 +36,12 @@ int main(int argc, char **argv) {
 	setloaded(l, "lpeg");
 	luaopen_lfs(l);
 	setloaded(l, "lfs");
-	
+
 	if (!luaL_loadbuffer(l, (const char *)argparse_lua, argparse_lua_len, "argparse.lua") == 0) {
 		fprintf(stderr, "Failed to load argparse.lua\n");
 		return 1;
 	}
+	lua_call(l, 0, 0);
 
 	if (!luaL_loadbuffer(l, (const char *)moonscript_lua, moonscript_lua_len, "moonscript.lua") == 0) {
 		fprintf(stderr, "Failed to load moonscript.lua\n");

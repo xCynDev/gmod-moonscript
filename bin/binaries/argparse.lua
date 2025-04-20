@@ -2097,4 +2097,5 @@ setmetatable(argparse, {__call = function(_, ...)
    return Parser(default_cmdline[0]):add_help(true)(...)
 end})
 
+package.preload['argparse'] = function() return argparse end
 return argparse
