@@ -133,7 +133,7 @@ build_grammar = wrap_env debug_grammar, (root) ->
     Local: key"local" * ((op"*" + op"^") / mark"declare_glob" + Ct(NameList) / mark"declare_with_shadows")
 
     Import: key"import" * Ct(ImportNameList) * SpaceBreak^0 * key"from" * Exp / mark"import"
-    ImportName: (sym"\\" * Ct(Cc"colon" * Name) + Name)
+    ImportName: (sym"::" * Ct(Cc"colon" * Name) + Name)
     ImportNameList: SpaceBreak^0 * ImportName * ((SpaceBreak^1 + sym"," * SpaceBreak^0) * ImportName)^0
 
     BreakLoop: Ct(key"break"/trim) + Ct(key"continue"/trim)
@@ -242,9 +242,8 @@ build_grammar = wrap_env debug_grammar, (root) ->
       symx"[" * Exp/mark"index" * sym"]"
 
     DotChainItem: symx"." * _Name/mark"dot"
-    ColonChainItem: symx"\\" * _Name / mark"colon"
+    ColonChainItem: symx"::" * _Name / mark"colon"
     ColonChain: ColonChainItem * (Invoke * ChainItems^-1)^-1
-    AliasColonChainItem: symx"::" * _Name / mark"colon"
 
     Slice: symx"[" * (SliceValue + Cc(1)) * sym"," * (SliceValue + Cc"")  *
       (sym"," * SliceValue)^-1 *sym"]" / mark"slice"
