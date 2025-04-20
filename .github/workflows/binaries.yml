@@ -22,7 +22,7 @@ jobs:
       run: |
         curl -O https://www.lua.org/ftp/lua-5.1.5.tar.gz
         tar -xzf lua-5.1.5.tar.gz
-        cd lua-5.1.5; make
+        cd lua-5.1.5; make linux
 
     - name: Get LPeg
       run: |
