@@ -1,6 +1,6 @@
 name: "binaries"
 
-on: [push]
+on: [workflow_dispatch]
 
 jobs:
   linux: 
@@ -49,7 +49,7 @@ jobs:
 
     - uses: msys2/setup-msys2@v2
       with:
-        install: gcc make curl
+        install: gcc make curl vim
 
     - name: Show GCC
       run: gcc -v
