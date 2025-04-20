@@ -23,7 +23,9 @@ jobs:
       run: |
         curl -O https://www.lua.org/ftp/lua-5.1.5.tar.gz
         tar -xzf lua-5.1.5.tar.gz
-        cd lua-5.1.5; make linux
+        cd lua-5.1.5
+        make linux
+        cd ..
 
     - name: Get LPeg
       run: |
@@ -36,7 +38,7 @@ jobs:
         tar -xzf luafilesystem.tar.gz
 
     - name: Build
-      run: gcc -o moon-out -Ilua-5.1.5/src/ bin/binaries/moon.c lpeg-1.0.2/lpvm.c lpeg-1.0.2/lpcap.c lpeg-1.0.2/lptree.c lpeg-1.0.2/lpcode.c lpeg-1.0.2/lpprint.c
+      run: gcc -Ilua-5.1.5/src/ -Llua-5.1.5/src/ bin/binaries/moon.c lpeg-1.0.2/lpvm.c lpeg-1.0.2/lpcap.c lpeg-1.0.2/lptree.c lpeg-1.0.2/lpcode.c lpeg-1.0.2/lpprint.c -l:liblua.a -lm -o moon-out
 
 
   windows:
@@ -56,7 +58,9 @@ jobs:
       run: |
         curl -O https://www.lua.org/ftp/lua-5.1.5.tar.gz
         tar -xZf lua-5.1.5.tar.gz
-        cd lua-5.1.5; make PLAT=mingw
+        cd lua-5.1.5
+        make PLAT=mingw
+        cd ..
 
     - name: Get LPeg
       run: |
@@ -75,7 +79,7 @@ jobs:
       run: lua-5.1.5/src/lua.exe -v
 
     - name: Build
-      run: gcc -o moon.exe -Ilua-5.1.5/src/ bin/binaries/moon.c lpeg-1.0.2/lpvm.c lpeg-1.0.2/lpcap.c lpeg-1.0.2/lptree.c lpeg-1.0.2/lpcode.c lpeg-1.0.2/lpprint.c
+      run: gcc -Ilua-5.1.5/src/ -Llua-5.1.5/src/ bin/binaries/moon.c lpeg-1.0.2/lpvm.c lpeg-1.0.2/lpcap.c lpeg-1.0.2/lptree.c lpeg-1.0.2/lpcode.c lpeg-1.0.2/lpprint.c -l:liblua.a -lm -o moon.exe
 
 
 
