@@ -1,15 +1,25 @@
-
 #include <lua.h>
 #include <lualib.h>
 #include <lauxlib.h>
 
 #include "moonscript.h"
-#include "moon.h"
+#include "moonc.h"
 #include "alt_getopt.h"
 
 #include <stdio.h>
 
 #include "luafilesystem/src/lfs.h"
+
+#ifdef _WIN32
+#include <windows.h>
+
+int _l_sleep(lua_State *l) {
+	double time = luaL_checknumber(l, -1);
+	Sleep((int)(time*1000));
+	return 0;
+}
+
+#endif
 
 // put whatever is on top of stack into package.loaded under name something is
 // already there
@@ -42,6 +52,16 @@ int main(int argc, char **argv) {
 	}
 	lua_call(l, 0, 0);
 
+	// add sleep method
+#ifdef _WIN32
+	lua_getglobal(l, "require");
+	lua_pushstring(l, "moonscript");
+	lua_call(l, 1, 1);
+	lua_pushcfunction(l, _l_sleep);
+	lua_setfield(l, -2, "_sleep");
+	lua_pop(l, 1);
+#endif
+
 	if (!luaL_loadbuffer(l, (const char *)alt_getopt_lua, alt_getopt_lua_len, "alt_getopt.lua") == 0) {
 		fprintf(stderr, "Failed to load alt_getopt.lua\n");
 		return 1;
@@ -60,7 +80,7 @@ int main(int argc, char **argv) {
 	}
 	lua_setglobal(l, "arg");
 
-	if (!luaL_loadbuffer(l, (const char *)moon_lua, moon_lua_len, "moon") == 0) {
+	if (!luaL_loadbuffer(l, (const char *)moonc_lua, moonc_lua_len, "moon") == 0) {
 		fprintf(stderr, "Failed to load moon\n");
 		return 1;
 	}
