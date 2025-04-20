@@ -62,6 +62,7 @@ jobs:
         make PLAT=mingw
         lua.exe -v
         cd ..
+      shell: cmd
 
     - name: Get LPeg
       run: |
@@ -78,3 +79,4 @@ jobs:
 
     - name: Build
       run: gcc -Ilua-5.1.5/src/ -Llua-5.1.5/src/ bin/binaries/moon.c lpeg-1.0.2/lpvm.c lpeg-1.0.2/lpcap.c lpeg-1.0.2/lptree.c lpeg-1.0.2/lpcode.c lpeg-1.0.2/lpprint.c -l:liblua.a -lm -o moon.exe
+      shell: cmd
