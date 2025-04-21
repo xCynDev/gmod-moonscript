@@ -29,10 +29,13 @@ jobs:
       run:
         shell: ${{matrix.os.shell}}
     steps:
-
       # Checkout the git repository.
-      - name: Checkout gmod-moonscript
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        name: Checkout gmod-moonscript
+
+      # CD Github Workspace
+      - name: CD Github Workspace
+        run: cd $GITHUB_WORKSPACE
 
       # Install dependencies for Linux
       - name: Install dependencies (Linux)
@@ -109,12 +112,8 @@ jobs:
         run: |
           cd ../..
           echo Generating moonscript.h
-          pwd
-          tree
           "bin/binaries/latest-compiler/moon" bin/splat.moon -l moonscript moonscript moon > bin/binaries/moonscript.lua
           cd bin/binaries
-          pwd
-          tree
           rm -fv moonscript.h
           xxd -i moonscript.lua > moonscript.h
           rm -fv moonscript.lua
