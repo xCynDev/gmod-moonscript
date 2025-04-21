@@ -35,7 +35,7 @@ jobs:
 
       # CD Github Workspace
       - name: CD Github Workspace
-        run: cd $GITHUB_WORKSPACE
+        run: cd ${{ github.workspace }}
 
       # Install dependencies for Linux
       - name: Install dependencies (Linux)
