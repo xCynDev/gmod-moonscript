@@ -36,7 +36,7 @@ jobs:
 
       # Install dependencies for Linux
       - name: Install dependencies (Linux)
-        if: ${{matrix.os.runner}} == 'ubuntu-latest'
+        if: ${{ matrix.os.runner == 'ubuntu-latest' }} 
         run: | 
           sudo apt-get update
           sudo apt-get install gzip xz-utils libreadline-dev tree -y
@@ -44,7 +44,7 @@ jobs:
       # Install dependencies for Windows
       - name: Install dependencies (Windows)
         uses: msys2/setup-msys2@v2
-        if: ${{matrix.os.runner}} == 'windows-latest'
+        if: ${{ matrix.os.runner == 'windows-latest' }} 
         with:
           install: gcc make curl vim
 
