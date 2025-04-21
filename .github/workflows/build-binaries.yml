@@ -110,6 +110,7 @@ jobs:
       # Generate headers required to build moonscript.
       - name: Generate headers
         run: |
+          pwd
           cd ../..
           echo Generating moonscript.h
           pwd
