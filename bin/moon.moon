@@ -10,9 +10,9 @@ argparser = argparse! name: "moon"
 
 argparser\argument "script"
 argparser\argument("args")\args "*"
-argparser\option "-c --coverage", "Collect and print code coverage"
-argparser\option "-d", "Disable stack trace rewriting"
-argparser\option "-v --version", "Print version information"
+argparser\flag "-c --coverage", "Collect and print code coverage"
+argparser\flag "-d", "Disable stack trace rewriting"
+argparser\flag "-v --version", "Print version information"
 
 base = 0
 for flag in *arg
