@@ -35,9 +35,7 @@ jobs:
 
       # CD Github Workspace
       - name: CD Github Workspace
-        run: | 
-          cd ${{ github.workspace }}
-          tree
+        run: cd ${{ github.workspace }}
 
       # Install dependencies for Linux
       - name: Install dependencies (Linux)
@@ -114,6 +112,7 @@ jobs:
         run: |
           cd ../..
           echo Generating moonscript.h
+          pwd
           "bin/binaries/latest-compiler/moon" bin/splat.moon -l moonscript moonscript moon > bin/binaries/moonscript.lua
           cd bin/binaries
           rm -fv moonscript.h
