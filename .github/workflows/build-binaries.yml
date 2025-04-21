@@ -35,7 +35,9 @@ jobs:
 
       # CD Github Workspace
       - name: CD Github Workspace
-        run: cd ${{ github.workspace }}
+        run: | 
+          cd ${{ github.workspace }}
+          tree
 
       # Install dependencies for Linux
       - name: Install dependencies (Linux)
