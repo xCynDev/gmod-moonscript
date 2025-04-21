@@ -1,0 +1,162 @@
+name: "build-binaries"
+
+on: [workflow_dispatch]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os:
+          - runner: ubuntu-latest
+            shell: bash
+            plat: linux
+            gcc-flags: -fpic -O2
+            moonc:  moonc
+            moon:   moon
+            artifact: gmod-moonscript-linux
+          
+          - runner: windows-latest
+            shell: cmd
+            plat: mingw
+            gcc-flags: -O2
+            moonc:  moonc.exe
+            moon:   moon.exe
+            artifact: gmod-moonscript-windows
+    
+    name: Build Moonscript Binaries (${{matrix.os.runner}})
+    runs-on: ${{matrix.os.runner}}
+    defaults:
+      run:
+        shell: ${{matrix.os.shell}}
+    steps:
+
+      # Checkout the git repository.
+      - name: Checkout gmod-moonscript
+        uses: actions/checkout@v4
+
+      # CD to the workspace
+      - name: CD Workspace
+        run: cd $GITHUB_WORKSPACE
+
+      # Install dependencies for Linux
+      - name: Install dependencies (Linux)
+        if: ${{matrix.os.runner}} == 'ubuntu-latest'
+        run: | 
+          sudo apt-get update
+          sudo apt-get install gzip xz-utils libreadline-dev tree -y
+
+      # Install dependencies for Windows
+      - name: Install dependencies (Windows)
+        if: ${{matrix.os.runner}} == 'windows-latest'
+        uses: msys2/setup-msys2@v2
+        with:
+          install: gcc make curl vim
+
+      # Output GCC version for debugging purposes.
+      - name: Show GCC
+        run: gcc -v
+
+      # Download the latest gmod-moonscript compiler to bootstrap the new version.
+      - name: Install latest gmod-moonscript compiler
+        uses: robinraju/release-downloader@v1
+        with:
+          repository: ${{github.repository}}
+          latest: true
+          fileName: '${{matrix.os.artifact}}.zip'
+          out-file-path: 'bin/binaries/latest-compiler'
+          extract: true
+
+      # Output the tree of the downloaded compiler.
+      - name: Display compiler tree
+        run: tree bin/binaries/latest-compiler
+      
+      # Hop into the binaries folder to fetch moonscript dependencies.
+      - name: CD Binaries folder
+        run: cd bin/binaries
+
+      # Download and compile Lua 5.1.5
+      - name: Setup Lua
+        run: |
+          curl -O https://www.lua.org/ftp/lua-5.1.5.tar.gz
+          tar -xzf lua-5.1.5.tar.gz
+          cd lua-5.1.5
+          make PLAT=${{matrix.os.plat}}
+          "src/lua" -v
+          cd ..
+
+      # Download and decompress LPeg
+      - name: Setup LPeg
+        run: |
+          curl -L http://www.inf.puc-rio.br/~roberto/lpeg/lpeg-1.0.2.tar.gz > lpeg.tar.gz
+          tar -xzf lpeg.tar.gz
+
+      # Download and compile LuaFileSystem
+      - name: Setup LuaFileSystem
+        run: |
+          curl -L -o luafilesystem.tar.gz https://github.com/keplerproject/luafilesystem/archive/v1_8_0.tar.gz
+          tar -xzf luafilesystem.tar.gz
+          mv luafilesystem-1_8_0/ luafilesystem/
+          cd luafilesystem
+          gcc -O2 -Wall -fPIC -W -Waggregate-return -Wcast-align -Wmissing-prototypes -Wnested-externs -Wshadow -Wwrite-strings -pedantic -I../lua-5.1.5/src/ -c -o src/lfs.o src/lfs.c
+          cd ..
+
+
+      # Generate headers required to build moonscript.
+      - name: Generate headers
+        run: |
+          cd ../..
+          echo Generating moonscript.h
+          "bin/binaries/latest-compiler/${{matrix.os.artifact}}/moon" bin/splat.moon -l moonscript moonscript moon > bin/binaries/moonscript.lua
+          cd bin/binaries
+          rm -fv moonscript.h
+          xxd -i moonscript.lua > moonscript.h
+          rm -fv moonscript.lua
+
+          echo Generating moon.h
+          cd ..
+          awk "FNR>1" moon > binaries/moon.lua
+          cd binaries
+          xxd -i moon.lua > moon.h
+          rm -fv moon.lua
+
+          echo Generating moonc.h
+          cd ..
+          awk "FNR>1" moonc > binaries/moonc.lua
+          cd binaries
+          xxd -i moonc.lua > moonc.h
+          rm -fv moonc.lua
+
+          echo Generating alt_getopt.h
+          rm -fv alt_getopt.h
+          xxd -i alt_getopt.lua > alt_getopt.h
+
+          echo Generating argparse.h
+          rm -fv argparse.h
+          xxd -i argparse.lua > argparse.h
+
+      # Create build output directory
+      - name: Make build output directory
+        run: mkdir build-output
+
+      # Build the moon executable.
+      - name: Build moon executable
+        run: gcc ${{matrix.os.gcc-flags}} -Ilua-5.1.5/src/ -I/ -Llua-5.1.5/src/ moon.c lpeg-1.0.2/lpvm.c lpeg-1.0.2/lpcap.c lpeg-1.0.2/lptree.c lpeg-1.0.2/lpcode.c lpeg-1.0.2/lpprint.c luafilesystem/src/lfs.o -l:liblua.a -lm -o build-output/${{matrix.os.moon}}
+
+      # Build the moon compiler executable.
+      - name: Build moonc executable
+        run: gcc ${{matrix.os.gcc-flags}} -Ilua-5.1.5/src/ -I/ -Llua-5.1.5/src/ moonc.c lpeg-1.0.2/lpvm.c lpeg-1.0.2/lpcap.c lpeg-1.0.2/lptree.c lpeg-1.0.2/lpcode.c lpeg-1.0.2/lpprint.c luafilesystem/src/lfs.o -l:liblua.a -lm -o build-output/${{matrix.os.moonc}}
+
+      # Archive the moon and moonc executables.
+      - name: Archive moon & moonc executables
+        uses: ihiroky/archive-action@v1
+        with:
+          root_dir: bin/binaries/build-output
+          file_path: ${{matrix.os.artifact}}.zip
+          verbose: true
+      
+      # Upload them as artifacts
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{matrix.os.artifact}}
+          path: ${{matrix.os.artifact}}.zip
