@@ -174,7 +174,7 @@ string_chars = {
     node[2]
 
   bitnot: (node) =>
-    @line "~", @value node[2]
+    @line("bit.bnot(", @value(node[2]), ")")
 
   length: (node) =>
     @line "#", @value node[2]
