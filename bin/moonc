@@ -5,7 +5,7 @@ local lfs = require "lfs"
 
 -- Check for the version flag.
 -- If set, it will ensure the file/directory argument is optional to avoid issues.
-local foundArgs = args or {}
+local foundArgs = arg or {}
 local hasVersionFlag = false
 for _, v in ipairs(foundArgs) do
   if v:lower() == "-v" or v:lower() == "--version" then
