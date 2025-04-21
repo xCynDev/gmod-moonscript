@@ -75,45 +75,42 @@ jobs:
       # Output the tree of the downloaded compiler.
       - name: Display compiler tree
         run: tree bin/binaries/latest-compiler
-      
-      # Hop into the binaries folder to fetch moonscript dependencies.
-      - name: CD Binaries folder
-        run: cd bin/binaries
 
       # Download and compile Lua 5.1.5
       - name: Setup Lua
         run: |
+          cd ${{github.workspace}}
+          cd bin/binaries
           curl -O https://www.lua.org/ftp/lua-5.1.5.tar.gz
           tar -xzf lua-5.1.5.tar.gz
           cd lua-5.1.5
           make PLAT=${{matrix.os.plat}}
           "src/lua" -v
-          cd ..
 
       # Download and decompress LPeg
       - name: Setup LPeg
         run: |
+          cd ${{github.workspace}}
+          cd bin/binaries
           curl -L http://www.inf.puc-rio.br/~roberto/lpeg/lpeg-1.0.2.tar.gz > lpeg.tar.gz
           tar -xzf lpeg.tar.gz
 
       # Download and compile LuaFileSystem
       - name: Setup LuaFileSystem
         run: |
+          cd ${{github.workspace}}
+          cd bin/binaries
           curl -L -o luafilesystem.tar.gz https://github.com/keplerproject/luafilesystem/archive/v1_8_0.tar.gz
           tar -xzf luafilesystem.tar.gz
           mv luafilesystem-1_8_0/ luafilesystem/
           cd luafilesystem
           gcc -O2 -Wall -fPIC -W -Waggregate-return -Wcast-align -Wmissing-prototypes -Wnested-externs -Wshadow -Wwrite-strings -pedantic -I../lua-5.1.5/src/ -c -o src/lfs.o src/lfs.c
-          cd ..
-
 
       # Generate headers required to build moonscript.
       - name: Generate headers
         run: |
-          tree
-          cd ../..
+          cd ${{github.workspace}}
           echo Generating moonscript.h
-          pwd
           "bin/binaries/latest-compiler/moon" bin/splat.moon -l moonscript moonscript moon > bin/binaries/moonscript.lua
           cd bin/binaries
           rm -fv moonscript.h
@@ -144,21 +141,30 @@ jobs:
 
       # Create build output directory
       - name: Make build output directory
-        run: mkdir build-output
+        run: | 
+          cd ${{github.workspace}}
+          cd bin/binaries
+          mkdir build-output
 
       # Build the moon executable.
       - name: Build moon executable
-        run: gcc ${{matrix.os.gcc-flags}} -Ilua-5.1.5/src/ -I/ -Llua-5.1.5/src/ moon.c lpeg-1.0.2/lpvm.c lpeg-1.0.2/lpcap.c lpeg-1.0.2/lptree.c lpeg-1.0.2/lpcode.c lpeg-1.0.2/lpprint.c luafilesystem/src/lfs.o -l:liblua.a -lm -o build-output/${{matrix.os.moon}}
+        run: |
+          cd ${{github.workspace}}
+          cd bin/binaries
+          gcc ${{matrix.os.gcc-flags}} -Ilua-5.1.5/src/ -I/ -Llua-5.1.5/src/ moon.c lpeg-1.0.2/lpvm.c lpeg-1.0.2/lpcap.c lpeg-1.0.2/lptree.c lpeg-1.0.2/lpcode.c lpeg-1.0.2/lpprint.c luafilesystem/src/lfs.o -l:liblua.a -lm -o build-output/${{matrix.os.moon}}
 
       # Build the moon compiler executable.
       - name: Build moonc executable
-        run: gcc ${{matrix.os.gcc-flags}} -Ilua-5.1.5/src/ -I/ -Llua-5.1.5/src/ moonc.c lpeg-1.0.2/lpvm.c lpeg-1.0.2/lpcap.c lpeg-1.0.2/lptree.c lpeg-1.0.2/lpcode.c lpeg-1.0.2/lpprint.c luafilesystem/src/lfs.o -l:liblua.a -lm -o build-output/${{matrix.os.moonc}}
+        run: |
+          cd ${{github.workspace}}
+          cd bin/binaries
+          gcc ${{matrix.os.gcc-flags}} -Ilua-5.1.5/src/ -I/ -Llua-5.1.5/src/ moonc.c lpeg-1.0.2/lpvm.c lpeg-1.0.2/lpcap.c lpeg-1.0.2/lptree.c lpeg-1.0.2/lpcode.c lpeg-1.0.2/lpprint.c luafilesystem/src/lfs.o -l:liblua.a -lm -o build-output/${{matrix.os.moonc}}
 
       # Archive the moon and moonc executables.
       - name: Archive moon & moonc executables
         uses: ihiroky/archive-action@v1
         with:
-          root_dir: bin/binaries/build-output
+          root_dir: ${{github.workspace}}/bin/binaries/build-output
           file_path: ${{matrix.os.artifact}}.zip
           verbose: true
       
