@@ -8,7 +8,7 @@ unpack = util.unpack
 
 argparser = argparse! name: "moon"
 
-argparser\argument "script"
+argparser\argument "script"\args "?"
 argparser\argument("args")\args "*"
 argparser\flag "-c --coverage", "Collect and print code coverage"
 argparser\flag "-d", "Disable stack trace rewriting"
@@ -30,6 +30,10 @@ run = ->
   if opts.version
     require("moonscript.version").print_version!
     os.exit!
+
+  if not opts.script
+    print_err "Error: missing argument 'script'"
+    os.exit 1
 
   script_fname = opts.script
 
