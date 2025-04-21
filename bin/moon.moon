@@ -8,7 +8,7 @@ unpack = util.unpack
 
 argparser = argparse! name: "moon"
 
-argparser\argument "script"\args "?"
+argparser\argument("script")\args "?"
 argparser\argument("args")\args "*"
 argparser\flag "-c --coverage", "Collect and print code coverage"
 argparser\flag "-d", "Disable stack trace rewriting"
