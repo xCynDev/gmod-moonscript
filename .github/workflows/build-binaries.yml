@@ -164,7 +164,7 @@ jobs:
       - name: Archive moon & moonc executables
         uses: ihiroky/archive-action@v1
         with:
-          root_dir: ${{github.workspace}}/bin/binaries/build-output
+          root_dir: bin/binaries/build-output
           file_path: ${{matrix.os.artifact}}.zip
           verbose: true
       
