@@ -65,7 +65,9 @@ jobs:
       # Make the downloaded moonscript binaries executable on linux.
       - name: Make moonscript binaries executable (Linux)
         if: ${{matrix.os.runner}} == 'ubuntu-latest'
-        run: sudo chmod +x bin/binaries/latest-compiler/${{matrix.os.moon}}
+        run: |
+          sudo chmod +x bin/binaries/latest-compiler/${{matrix.os.moon}}
+          "bin/binaries/latest-compiler/${{matrix.os.moon}}" -v
 
       # Output the tree of the downloaded compiler.
       - name: Display compiler tree
