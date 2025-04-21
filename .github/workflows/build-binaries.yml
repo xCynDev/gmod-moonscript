@@ -110,6 +110,7 @@ jobs:
           cd ../..
           echo Generating moonscript.h
           pwd
+          tree
           "bin/binaries/latest-compiler/moon" bin/splat.moon -l moonscript moonscript moon > bin/binaries/moonscript.lua
           cd bin/binaries
           pwd
