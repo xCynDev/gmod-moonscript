@@ -34,10 +34,6 @@ jobs:
       - name: Checkout gmod-moonscript
         uses: actions/checkout@v4
 
-      # CD to the workspace
-      - name: CD Workspace
-        run: cd $GITHUB_WORKSPACE
-
       # Install dependencies for Linux
       - name: Install dependencies (Linux)
         if: ${{matrix.os.runner}} == 'ubuntu-latest'
@@ -47,8 +43,8 @@ jobs:
 
       # Install dependencies for Windows
       - name: Install dependencies (Windows)
-        if: ${{matrix.os.runner}} == 'windows-latest'
         uses: msys2/setup-msys2@v2
+        if: ${{matrix.os.runner}} == 'windows-latest'
         with:
           install: gcc make curl vim
 
