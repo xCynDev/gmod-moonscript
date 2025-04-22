@@ -24,10 +24,6 @@ jobs:
           pattern: gmod-moonscript-*
           merge-multiple: true
 
-      # Display tree
-      - name: Display tree
-        run: tree
-
       # Make a release with those artifacts.
       - name: Make release
         uses: softprops/action-gh-release@v2
