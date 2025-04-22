@@ -5,8 +5,7 @@ on:
 
 jobs:
   build-binaries:
-    - uses: ./.github/workflows/build-binaries.yml
-      name: Build Moonscript Binaries (Windows & Linux)
+    uses: ./.github/workflows/build-binaries.yml
   release:
     name: Release Moonscript Binaries
     runs-on: ubuntu-latest
