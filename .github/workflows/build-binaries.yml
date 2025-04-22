@@ -1,6 +1,14 @@
 name: "build-binaries"
 
-on: [workflow_dispatch]
+# Build binaries when called upon by another workflow, or manually triggered, or a commit is pushed.
+# Do not build branches when a tag is pushed - this is handled by release-binaries.yml
+on: 
+  workflow_call:
+  workflow_dispatch:
+  push:
+    tags-ignore:  '**'
+    branches:     '**'
+
 
 jobs:
   build:

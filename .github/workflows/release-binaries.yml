@@ -1,0 +1,35 @@
+name: Release Binaries
+on:
+  push:
+    tags: 'v*.*.*'
+
+jobs:
+  release:
+    name: Release Moonscript Binaries
+    runs-on: ubuntu-latest
+    steps:
+
+      # Run build-binaries with the tagged commit.
+      - uses: ./.github/workflows/build-binaries.yml
+        name: Build Moonscript Binaries (Windows & Linux)
+
+      # Make artifacts directory
+      - name: Make artifacts directory
+        run: mkdir artifacts
+
+      # Download the artifacts from the build.
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          pattern: gmod-moonscript-*
+          merge-multiple: true
+
+      # Make a release with those artifacts.
+      - name: Make release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            artifacts/gmod-moonscript-windows.zip
+            artifacts/gmod-moonscript-linux.zip
+          fail_on_unmatched_files: true
