@@ -4,18 +4,13 @@ on:
     tags: 'v*.*.*'
 
 jobs:
+  build-binaries:
+    - uses: ./.github/workflows/build-binaries.yml
+      name: Build Moonscript Binaries (Windows & Linux)
   release:
     name: Release Moonscript Binaries
     runs-on: ubuntu-latest
     steps:
-
-      # Checkout repository at tagged commit.
-      - uses: actions/checkout@v4
-        name: Checkout gmod-moonscript
-
-      # Run build-binaries with the tagged commit.
-      - uses: ./.github/workflows/build-binaries.yml
-        name: Build Moonscript Binaries (Windows & Linux)
 
       # Make artifacts directory
       - name: Make artifacts directory

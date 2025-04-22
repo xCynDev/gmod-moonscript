@@ -1,4 +1,4 @@
-name: "build-binaries"
+name: "Build Binaries"
 
 # Build binaries when called upon by another workflow, or manually triggered, or a commit is pushed.
 # Do not build branches when a tag is pushed - this is handled by release-binaries.yml
