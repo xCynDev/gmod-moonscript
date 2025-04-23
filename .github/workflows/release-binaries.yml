@@ -28,6 +28,7 @@ jobs:
       - name: Make release
         uses: softprops/action-gh-release@v2
         with:
+          name: Garry's Mod MoonScript ${{github.ref_name}}
           files: |
             artifacts/gmod-moonscript-windows.zip
             artifacts/gmod-moonscript-linux.zip
