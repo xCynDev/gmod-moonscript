@@ -78,7 +78,9 @@ jobs:
         if: ${{matrix.os.runner}} == 'ubuntu-latest'
         run: |
           sudo chmod +x bin/binaries/latest-compiler/${{matrix.os.moon}}
+          sudo chmod +x bin/binaries/latest-compiler/${{matrix.os.moonc}}
           "bin/binaries/latest-compiler/${{matrix.os.moon}}" -v
+          "bin/binaries/latest-compiler/${{matrix.os.moonc}}" -v
 
       # Output the tree of the downloaded compiler.
       - name: Display compiler tree
