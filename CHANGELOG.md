@@ -1,3 +1,11 @@
+# Garry's Mod MoonScript v0.6.1 (2025-04-23)
+
+## Misc
+
+* Removed .lua files from MoonScript modules from the repository.
+* Removed LuaRocks related files from the root.
+* Automatically generate version.moon on build. moon/moonc -v now displays the correct information.
+
 # Garry's Mod MoonScript v0.6.0 (2025-04-21)
 
 Automated builds for both Windows & Linux (moon & moonc only for now).
