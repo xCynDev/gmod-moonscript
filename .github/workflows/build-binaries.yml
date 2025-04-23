@@ -91,21 +91,21 @@ jobs:
         if: ${{ github.event_name == 'workflow_call' }}
         shell: bash
         run: |
-          cd ${{ github.workspace }}
+          cd "${GITHUB_WORKSPACE//\\/}"
           cd moonscript
           echo version = \"${{ github.ref_name }}\" > version.moon
-          echo "{ version: version, print_version: -> print \"Garry's Mod MoonScript #{version}\" }" >> version.moon
+          echo "{ version: version, print_version: -> print \"Garry's Mod MoonScript version #{version}\" }" >> version.moon
           cat version.moon
 
       - name: Update version.moon (prerelease)
         if: ${{ github.event_name != 'workflow_call' }}
         shell: bash
         run: |
-          cd ${{ github.workspace }}
+          cd "${GITHUB_WORKSPACE//\\/}"
           cd moonscript
           shortSha=$(git rev-parse --short ${{ github.sha }})
           echo version = \"prerelease-"$shortSha"\" > version.moon
-          echo "{ version: version, print_version: -> print \"Garry's Mod MoonScript #{version}\" }" >> version.moon
+          echo "{ version: version, print_version: -> print \"Garry's Mod MoonScript version #{version}\" }" >> version.moon
           cat version.moon
         
       # Compile all moonscript modules using latest compiler
