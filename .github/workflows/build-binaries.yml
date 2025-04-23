@@ -93,7 +93,7 @@ jobs:
         run: |
           cd ${{ github.workspace }}
           cd moonscript
-          echo version = "${{ github.ref_name }}" > version.moon
+          echo version = \"${{ github.ref_name }}\" > version.moon
           echo { version: version, print_version: -> print "Garry's Mod MoonScript #{version}" } >> version.moon
           cat version.moon
 
@@ -103,8 +103,8 @@ jobs:
         run: |
           cd ${{ github.workspace }}
           cd moonscript
-          shortSha=$(git rev-parse --short ${{ github.sha}})
-          echo version = "$shortSha" > version.moon
+          shortSha=$(git rev-parse --short ${{ github.sha }})
+          echo version = \""$shortSha"\" > version.moon
           echo { version: version, print_version: -> print "Garry's Mod MoonScript #{version}" } >> version.moon
           cat version.moon
         
