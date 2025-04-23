@@ -84,6 +84,13 @@ jobs:
       - name: Display compiler tree
         run: tree bin/binaries/latest-compiler
 
+      # Compile all moonscript modules using latest compiler
+      - name: Compile moonscript modules to Lua
+        run: |
+          cd ${{ github.workspace }}
+          "bin/binaries/latest-compiler/moonc" moon/*
+          "bin/binaries/latest-compiler/moonc" moonscript/*
+
       # Download and compile Lua 5.1.5
       - name: Setup Lua
         run: |
