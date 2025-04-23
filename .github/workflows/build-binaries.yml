@@ -4,6 +4,12 @@ name: "Build Binaries"
 # Do not build branches when a tag is pushed - this is handled by release-binaries.yml
 on: 
   workflow_call:
+    inputs:
+      is_release:
+        description: If true, we're building binaries for a release.
+        type: boolean
+        required: false
+        default: true
   workflow_dispatch:
   push:
     tags-ignore:  '**'
@@ -88,7 +94,7 @@ jobs:
 
       # Update version.moon depending on the event that triggered this workflow.
       - name: Update version.moon (release)
-        if: ${{ github.event_name == 'workflow_call' }}
+        if: ${{ inputs.is_release == true }}
         shell: bash
         run: |
           cd moonscript
@@ -97,7 +103,7 @@ jobs:
           cat version.moon
 
       - name: Update version.moon (prerelease)
-        if: ${{ github.event_name != 'workflow_call' }}
+        if: ${{ inputs.is_release == false }}
         shell: bash
         run: |
           cd moonscript
