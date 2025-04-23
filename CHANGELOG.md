@@ -1,4 +1,35 @@
+# Garry's Mod MoonScript v0.6.0 (2025-04-21)
 
+Automated builds for both Windows & Linux (moon & moonc only for now).
+
+Keep in mind these changelogs will be missing all of the work from the upstream MoonScript repository between 0.5.0 and now.
+There doesn't seem to be many syntax changes, if any, however there have been a lot of changes in dependencies and moon/moonc.
+
+Considering we have our own build solution for these, I'm dropping all of the LuaRocks stuff.
+Any dependencies for the built moon/moonc executables are packaged within them now. As such, you don't need to install anything to use them.
+Specs are currently broken so they have been disabled. I'll re-add them if necessary in the future. 
+
+## Syntax updates
+
+### Self-passing function calls and chaining.
+
+`::` has been added as an alias of `\` for function chaining (`with`) and self-passing function calls:
+```moon
+obj::func()
+obj\func() -- equal
+```
+```lua
+obj:func()
+obj:func()
+```
+
+### Bitwise
+
+Bitwise NOT (`~`) is now compiled as a `bit.bnot()` call. More bitwise library changes soon.
+
+## Bug Fixes
+
+Fixed moon & moonc argument parsing issues from latest moonscript master. Likely due to changing `alt_getopt` with `argparse`.
 
 # MoonScript v0.5.0 (2016-9-25)
 
