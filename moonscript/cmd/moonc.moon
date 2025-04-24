@@ -89,7 +89,7 @@ compile_file_text = (text, opts={}) ->
     fn = assert file!
     tree = assert fn tree
 
-  code, posmap_or_err, err_pos = compile.tree tree
+  code, posmap_or_err, err_pos = compile.tree tree, opts
 
   unless code
     return nil, compile.format_error posmap_or_err, err_pos, text

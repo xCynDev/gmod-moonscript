@@ -1,0 +1,13 @@
+# Ignore locally built binaries for testing.
+bin/binaries/latest-compiler/
+bin/binaries/build-output
+bin/binaries/lpeg**
+bin/binaries/lua**
+bin/binaries/**.h
+bin/binaries/**.lua
+!bin/binaries/alt_getopt.lua
+!bin/binaries/argparse.lua
+
+# Ignore all compiled lua files in moonscript modules.
+moonscript/**/*.lua
+moon/**/*.lua

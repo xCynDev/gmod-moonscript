@@ -17,8 +17,17 @@ import construct_comprehension from require "moonscript.transform.comprehension"
 
 import unpack from require "moonscript.util"
 
-with_continue_listener = (body) ->
+with_continue_listener = (opts, body) ->
   continue_name = nil
+  -- If we're compiling code for Garry's Mod, we don't need to modify the output.
+  -- This is because Garry's Mod treats it as a keyword. So we can just output it as-is.
+  if opts.gmod
+    return {
+      Run =>
+        @listen "continue", ->
+          return true
+      build.group body
+    }
 
   {
     Run =>
@@ -198,8 +207,12 @@ Transformer {
     node
 
   continue: (node) =>
+    -- If we're compiling for Garry's Mod, we can output the continue keyword as-is.
+    -- We'll know we are because continue_name will return true
     continue_name = @send "continue"
-    error "continue must be inside of a loop" unless continue_name
+    return {"keyword", "continue"} if continue_name == true
+
+    error "continue must be inside of a loop" unless continue_name or opts.gmod
     build.group {
       build.assign_one continue_name, "true"
       {"break"}
@@ -460,15 +473,15 @@ Transformer {
         }
       }
 
-    node.body = with_continue_listener node.body
+    node.body = with_continue_listener(@get_options(), node.body)
 
   while: (node) =>
     smart_node node
-    node.body = with_continue_listener node.body
+    node.body = with_continue_listener(@get_options(), node.body)
 
   for: (node) =>
     smart_node node
-    node.body = with_continue_listener node.body
+    node.body = with_continue_listener(@get_options(), node.body)
 
   switch: (node, ret) =>
     exp, conds = unpack node, 2

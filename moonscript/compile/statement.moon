@@ -134,4 +134,9 @@ import unpack from require "moonscript.util"
       \stms node[2]
 
   noop: => -- nothing!
+
+  -- Output a simple keyword
+  keyword: (node) =>
+    name = unpack node, 2
+    @line name
 }

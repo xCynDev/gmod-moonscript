@@ -412,6 +412,15 @@ class Block
     @_lines = Lines!
     @stms fn lines
 
+  -- Goes up through the parents until options are found.
+  get_options: () =>
+    return @options if @options
+    curr = @parent
+    while curr ~= nil
+      return curr.options if curr.options
+      curr = curr.parent
+    nil
+
 class RootBlock extends Block
   new: (@options) =>
     @root = self
