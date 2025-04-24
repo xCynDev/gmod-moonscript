@@ -212,7 +212,7 @@ Transformer {
     continue_name = @send "continue"
     return {"keyword", "continue"} if continue_name == true
 
-    error "continue must be inside of a loop" unless continue_name or opts.gmod
+    error "continue must be inside of a loop" unless continue_name
     build.group {
       build.assign_one continue_name, "true"
       {"break"}
