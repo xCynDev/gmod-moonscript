@@ -54,9 +54,6 @@ with_continue_listener = (opts, body) ->
             lines
             {"assign", {continue_name}, {"true"}}
           }}
-          {"if", {"not", continue_name}, {
-            {"break"}
-          }}
         }
   }
 
